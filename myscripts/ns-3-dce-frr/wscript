@@ -1,0 +1,92 @@
+## -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+import os
+import os.path
+import ns3waf
+import sys
+
+from waflib import Utils, Scripting, Configure, Build, Options, TaskGen, Context, Task, Logs, Errors
+
+
+def options(opt):
+    opt.tool_options('compiler_cc') 
+    ns3waf.options(opt)
+
+def configure(conf):
+    ns3waf.check_modules(conf, ['core', 'network', 'internet'], mandatory = True)
+    ns3waf.check_modules(conf, ['point-to-point', 'tap-bridge', 'netanim'], mandatory = False)
+    ns3waf.check_modules(conf, ['wifi', 'point-to-point', 'csma', 'mobility'], mandatory = False)
+    ns3waf.check_modules(conf, ['point-to-point-layout'], mandatory = False)
+    ns3waf.check_modules(conf, ['topology-read', 'internet-apps', 'applications', 'visualizer'], mandatory = False)
+
+    conf.env.append_value('CXXFLAGS', '-I/usr/include/python2.6')
+    conf.env.append_value('LINKFLAGS', '-pthread')
+    conf.check (lib='dl', mandatory = True)
+
+    conf.env['ENABLE_PYTHON_BINDINGS'] = True
+    conf.env['NS3_ENABLED_MODULES'] = []
+    ns3waf.print_feature_summary(conf)
+
+
+def build_dce_kernel_examples(module):
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/dce-frr-zebra',
+                       source=['example/dce-frr-zebra.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/dce-frr-bgpd',
+                       source=['example/dce-frr-bgpd.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/dce-frr-ospfd',
+                       source=['example/dce-frr-ospfd.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/lab21',
+                       source=['example/lab21.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/lab23',
+                       source=['example/lab23.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/lab26',
+                       source=['example/lab26.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/fat_tree',
+                       source=['example/fat_tree.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/vftgen',
+                       source=['example/vftgen.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/vftgen-link-failure',
+                       source=['example/vftgen-link-failure.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/vftgen-link-recovery',
+                       source=['example/vftgen-link-recovery.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/vftgen-node-failure',
+                       source=['example/vftgen-node-failure.cc'])
+    module.add_example(needed = ['core', 'internet', 'dce-frr', 'point-to-point', 'csma'],
+                       target='bin/vftgen-node-recovery',
+                       source=['example/vftgen-node-recovery.cc'])  
+
+
+def build(bld):
+    module_source = [
+        'helper/frr-helper.cc',
+	    'example/frr-utils.cc',
+        'example/vftgen-utils.cc',
+        'example/vftgen-classes.cc',
+        ]
+    module_headers = [
+        'helper/frr-helper.h',
+	    'example/frr-utils.h',
+        'example/vftgen-utils.h',
+        'example/vftgen-classes.h',        
+        ]
+    module_source = module_source
+    module_headers = module_headers
+    uselib = ns3waf.modules_uselib(bld, ['core', 'network', 'internet', 'netlink', 'dce'])
+    module = ns3waf.create_module(bld, name='dce-frr',
+                                  source=module_source,
+                                  headers=module_headers,
+                                  use=uselib,
+                                  lib=['dl'])
+
+    build_dce_kernel_examples(module)

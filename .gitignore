@@ -13,3 +13,11 @@ GRTAGS
 GTAGS
 myscripts/ns-3-dce-quagga/
 myscripts/ns-3-dce-umip/
+*.pcap
+NetAnim.xml
+rename.sh
+rename2.sh
+graph.txt
+graph.png
+nohup.out
+.vscode/*
