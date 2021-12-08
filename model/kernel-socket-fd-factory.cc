@@ -156,12 +156,14 @@ KernelSocketFdFactory::Malloc (struct SimKernel *kernel, unsigned long size)
 void
 KernelSocketFdFactory::Free (struct SimKernel *kernel, void *ptr)
 {
+  /*
   KernelSocketFdFactory *self = (KernelSocketFdFactory *)kernel;
   uint8_t *buffer = (uint8_t*)ptr;
   size_t size;
   buffer -= sizeof (size_t);
   memcpy (&size, buffer, sizeof (size_t));
   self->m_alloc->Free (buffer, size);
+  */
 }
 void *
 KernelSocketFdFactory::Memcpy (struct SimKernel *kernel, void *dst, const void *src, unsigned long size)
