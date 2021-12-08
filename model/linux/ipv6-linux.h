@@ -165,7 +165,7 @@ public:
    * \param addOnLinkRoute add on-link route to the network (default true)
    * \returns true if the operation succeeded
    */
-  virtual bool AddAddress (uint32_t interface, Ipv6InterfaceAddress address, bool addOnLinkRoute = true);
+  virtual bool AddAddress (uint32_t interface, Ipv6InterfaceAddress address);
 
   /**
    * \param interface Interface number of an Ipv6 interface
